@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@using GEntretien.Application.Services
+@inject IVersionService VersionService
 
 <div class="page">
     <div class="sidebar">
@@ -7,6 +9,7 @@
 
     <main>
         <div class="top-row px-4">
+            <span class="version-badge">v@Version</span>
             <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
         </div>
 
@@ -21,3 +24,12 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
+
+@code {
+    private string Version { get; set; } = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        Version = VersionService.GetVersion();
+    }
+}

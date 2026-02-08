@@ -96,3 +96,22 @@ main {
         right: 0.75rem;
         top: 0.5rem;
     }
+.version-badge {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-right: 1.5rem;
+    user-select: none;
+}
+
+@media (max-width: 640.98px) {
+    .version-badge {
+        margin-right: 0.5rem;
+        font-size: 0.75rem;
+        padding: 0.2rem 0.5rem;
+    }
+}

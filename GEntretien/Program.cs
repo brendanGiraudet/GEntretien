@@ -9,6 +9,7 @@ using Blazored.FluentValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using GEntretien.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,8 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddAuthorization();
+
+builder.Services.AddScoped<IVersionService, VersionService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
