@@ -1,0 +1,75 @@
+@page "/equipment"
+@using GEntretien.Domain.Entities
+@using GEntretien.Domain.Interfaces
+@inject IEquipmentRepository EquipmentRepository
+
+<h3>Equipements</h3>
+
+<button class="btn btn-primary" @onclick="CreateNew">Créer un équipement</button>
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nom</th>
+            <th>Serial</th>
+            <th>Location</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (equipments is null)
+        {
+            <tr><td colspan="5">Chargement...</td></tr>
+        }
+        else if (!equipments.Any())
+        {
+            <tr><td colspan="5">Aucun équipement</td></tr>
+        }
+        else
+        {
+            @foreach (var e in equipments)
+            {
+                <tr>
+                    <td>@e.Id</td>
+                    <td>@e.Name</td>
+                    <td>@e.SerialNumber</td>
+                    <td>@e.Location</td>
+                    <td>
+                        <a class="btn btn-sm btn-secondary" href="/equipment/edit/@e.Id">Éditer</a>
+                        <button class="btn btn-sm btn-danger" @onclick="() => Delete(e.Id)">Supprimer</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<Equipment>? equipments;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        equipments = await EquipmentRepository.ListAsync();
+    }
+
+    private void CreateNew()
+    {
+        NavigationManager.NavigateTo("/equipment/edit/0");
+    }
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = default!;
+
+    private async Task Delete(int id)
+    {
+        await EquipmentRepository.DeleteAsync(id);
+        await Load();
+        StateHasChanged();
+    }
+}

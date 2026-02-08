@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="GEntretien/GEntretien.csproj" />
+  <Project Path="GEntretien.Tests/GEntretien.Tests.csproj" />
+</Solution>

@@ -1,0 +1,71 @@
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio cache/options directory
+.vs/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ReSharper is a .NET coding add-in
+.idea/
+*.sln.iml
+
+# Local environment files
+.env
+.env.local
+.env.*.local
+
+# Configuration files with secrets
+appsettings.*.json
+!appsettings.json
+
+# SQLite database
+*.db
+*.db-shm
+*.db-wal
+
+# NuGet
+.nuget/
+packages/
+!packages/build/
+*.nupkg
+*.snupkg
+
+# Test Results
+TestResults/
+*.trx
+
+# macOS
+.DS_Store
+
+# Docker
+.container/
+.docker/
+docker-compose.override.yml
+
+# Node (if using any frontend build tools)
+node_modules/
+npm-debug.log
+yarn-error.log
