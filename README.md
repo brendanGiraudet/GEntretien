@@ -1,353 +1,277 @@
-# GEntretien - Gestion d'Entretien de Matériel
+# GEntretien - Gestion d'Équipement de Maintenance
 
-Une application web de gestion d'entretien de matériel construite avec **Blazor .NET 10**, **SQLite**, et **Clean Architecture**.
+**Un système moderne de gestion d'entretien de matériel construit avec Blazor Server .NET 10 et Google OAuth 2.0.**
 
-## 🎯 Principes de Développement
+---
 
-- **SOLID** — Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion
-- **KISS** — Keep It Simple, Stupid
-- **YAGNI** — You Aren't Gonna Need It
-- **Boy Scout** — Leave code cleaner than you found it
-- **Clean Architecture** — Separation of concerns (Domain, Application, Infrastructure, Web)
-- **Feature Folders** — Organize code by feature, not by layer
+## 📸 Aperçu
 
-## 🚀 Quick Start
+- ✅ **Authentification complète** — Google OAuth 2.0
+- ✅ **Interface Blazor Server** — Real-time updates
+- ✅ **Base de données SQLite** — Avec migrations EF Core
+- ✅ **Validation robuste** — FluentValidation + UI
+- ✅ **Architecture Clean** — 4 couches avec SOLID
+- ✅ **Docker Ready** — Compose + Multi-stage build
+- ✅ **Bien documentée** — Guides pour tous les niveaux
 
-### Prerequisites
+---
 
-- .NET 10 SDK ([Download](https://dotnet.microsoft.com/en-us/download/dotnet/10.0))
-- Visual Studio 2022 / VS Code (optional)
+## 🚀 Démarrer Rapidement
 
-### Local Development
+### 1️⃣ Prérequis
+- [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
+- Google Account (pour OAuth)
 
-```bash
-# Clone repository
-git clone <repo-url>
-cd RepoTest
+### 2️⃣ Obtenir Google OAuth Credentials
+Visitez [docs/GOOGLE_OAUTH.md](docs/GOOGLE_OAUTH.md) pour instructions détaillées.
 
-# Restore dependencies
-dotnet restore
+### 3️⃣ Configurer les Secrets
 
-# Build project
-dotnet build
+```powershell
+# Automatique
+.\scripts\SETUP_SECRETS.ps1
 
-# Run application
-dotnet run --project GEntretien/GEntretien.csproj
+# Ou manuel
+cd GEntretien
+dotnet user-secrets set "Authentication:Google:ClientId" "YOUR_ID"
+dotnet user-secrets set "Authentication:Google:ClientSecret" "YOUR_SECRET"
 ```
 
-Access the app at: `http://localhost:5000`
-
-### With Docker
+### 4️⃣ Lancer
 
 ```bash
-# Build and run with Docker Compose
+dotnet run --project GEntretien/
+# Accédez à: http://localhost:5000
+```
+
+---
+
+## 📚 Documentation
+
+### Démarrage
+- **[docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)** — Démarrage 5 minutes ⭐
+
+### Guides Techniques
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — Architecture Clean & SOLID
+- **[docs/GOOGLE_OAUTH.md](docs/GOOGLE_OAUTH.md)** — Configuration Google OAuth
+- **[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)** — Problèmes et solutions
+
+### Déploiement
+- **[deployment/DOCKER.md](deployment/DOCKER.md)** — Docker local et production
+- **[deployment/SECRETS_MANAGEMENT.md](deployment/SECRETS_MANAGEMENT.md)** — Sécurité des secrets
+
+### Ancien docs (consultez plutôt la structure ci-dessus)
+- `README.md` (ancien mais conservé pour référence)
+- Fichiers `.md` dans la racine (migrer vers `docs/` ou `deployment/`)
+
+---
+
+## 🐳 Docker
+
+### Développement Local
+
+```bash
+cp .env.example .env
+# Éditer .env avec vos credentials
+
 docker-compose up -d
-
-# View logs
-docker-compose logs -f gentralretien
-
-# Stop
-docker-compose down
 ```
 
-See [DOCKER_DEPLOYMENT.md](DOCKER_DEPLOYMENT.md) for detailed Docker guide.
+### Production
 
-## 📁 Project Structure
+Voir [deployment/DOCKER.md](deployment/DOCKER.md) et [deployment/SECRETS_MANAGEMENT.md](deployment/SECRETS_MANAGEMENT.md).
+
+---
+
+## 🏗️ Structure du Projet
 
 ```
 GEntretien/
-├── Domain/                          # Core business logic (no external dependencies)
-│   ├── Entities/
-│   │   └── Equipment.cs
-│   └── Interfaces/
-│       └── IEquipmentRepository.cs
-├── Application/                     # Use cases, DTOs, validators
-│   ├── Validators/
-│   │   └── EquipmentValidator.cs
-│   └── (DTOs, Services, use-cases)
-├── Infrastructure/                  # EF Core, repositories, migrations
-│   ├── Persistence/
-│   │   ├── AppDbContext.cs
-│   │   └── Migrations/
-│   └── Repositories/
-│       └── EquipmentRepository.cs
-├── Web/                             # Blazor Server UI (Feature Folders)
-│   ├── Features/
-│   │   ├── Equipment/
-│   │   │   ├── Pages/
-│   │   │   │   ├── EquipmentList.razor
-│   │   │   │   └── EquipmentEdit.razor
-│   │   │   └── Components/
-│   │   └── Maintenance/
-│   ├── Components/                  # Shared components
-│   │   ├── App.razor
-│   │   ├── Routes.razor
-│   │   └── Layout/
-│   ├── Program.cs
-│   ├── appsettings.json
-│   └── wwwroot/
-├── GEntretien.Tests/                # Unit & Integration tests
-│   └── Validators/
-│       └── EquipmentValidatorTests.cs
-├── Dockerfile                       # Multi-stage Docker build
-├── docker-compose.yml              # Local Docker setup
-└── README.md (this file)
+├── Domain/                 # Entités métier (sans dépendances)
+├── Application/            # Validators, Services, DTOs
+├── Infrastructure/         # EF Core, Repositories
+├── Components/             # Blazor UI
+├── Program.cs              # DI + Middleware (OAuth)
+└── appsettings.json
+
+docs/                       # 📚 Documentation
+├── GETTING_STARTED.md      # Démarrage rapide
+├── ARCHITECTURE.md         # Structure et principes
+├── GOOGLE_OAUTH.md         # Configuration OAuth
+└── TROUBLESHOOTING.md      # Problèmes + solutions
+
+deployment/                 # 🚀 Déploiement
+├── DOCKER.md               # Docker local & production
+└── SECRETS_MANAGEMENT.md   # Sécurité des secrets
+
+scripts/                    # 🔧 Automation
+├── SETUP_SECRETS.ps1       # Configure Google OAuth
+└── DOCKER_DEPLOY.ps1       # Gère Docker Compose
 ```
 
-## 🛠️ Development Workflow
+---
 
-### Adding a New Feature
+## 🔑 Principes
 
-1. **Create Domain Model** (if needed)
-   - Add entity in `Domain/Entities/`
-   - Add repository interface in `Domain/Interfaces/`
+- **SOLID** — Single Responsibility, Open/Closed, Liskov, Interface Segregation, Dependency Inversion
+- **KISS** — Keep It Simple, Stupid
+- **YAGNI** — You Aren't Gonna Need It
+- **Boy Scout** — Leave code cleaner than you found it
 
-2. **Create Application Layer**
-   - Add DTOs in `Application/`
-   - Add validators in `Application/Validators/`
-   - Add services/use-cases in `Application/Services/`
+---
 
-3. **Create Infrastructure**
-   - Implement repository in `Infrastructure/Repositories/`
-   - Update `AppDbContext` with `DbSet<T>`
-
-4. **Create Feature Folder** (Web)
-   - Create folder in `Web/Features/{FeatureName}/`
-   - Add Pages, Components, Services as needed
-
-5. **Register Services** in `Program.cs`
-   ```csharp
-   builder.Services.AddScoped<IMyRepository, MyRepository>();
-   ```
-
-### Running Tests
+## 🧪 Tests
 
 ```bash
-# Run all tests
+# Tous les tests
 dotnet test
 
-# Run specific test project
-dotnet test GEntretien.Tests/GEntretien.Tests.csproj
-
-# With verbose output
-dotnet test --logger "console;verbosity=detailed"
+# Spécifique
+dotnet test GEntretien.Tests/
 ```
 
-### Database Migrations
+---
+
+## 📋 Commandes Utiles
 
 ```bash
-# Create new migration
-dotnet ef migrations add MigrationName -p GEntretien/GEntretien.csproj -s GEntretien/GEntretien.csproj
+# Développement
+dotnet run --project GEntretien/
+dotnet build
+dotnet test
 
-# Apply migrations
-dotnet ef database update -p GEntretien/GEntretien.csproj -s GEntretien/GEntretien.csproj
+# Docker
+docker-compose up -d
+docker-compose logs -f
+docker-compose down
 
-# Remove last migration (if not applied yet)
-dotnet ef migrations remove -p GEntretien/GEntretien.csproj -s GEntretien/GEntretien.csproj
-```
-
-## 🧪 Testing
-
-The project uses:
-- **xUnit** for test framework
-- **FluentValidation.TestHelper** for validation tests
-
-Example test:
-
-```csharp
-[Fact]
-public void Should_have_error_when_name_is_empty()
-{
-    var model = new Equipment { Name = "" };
-    var result = new EquipmentValidator().Validate(model);
-    Assert.False(result.IsValid);
-}
-```
-
-## 🔒 Validation
-
-Uses **FluentValidation** with Blazored integration. Rules defined in `Application/Validators/`.
-
-Example:
-
-```csharp
-RuleFor(x => x.Name)
-    .NotEmpty().WithMessage("Le nom est requis")
-    .MaximumLength(200).WithMessage("Le nom est trop long");
-```
-
-Applied in forms via `<FluentValidationValidator />` component.
-
-## � Google OAuth Authentication
-
-The entire application requires authentication via Google Sign-In. Users must authenticate before accessing any page.
-
-### Quick Setup
-
-#### Option 1: Automated Setup (PowerShell)
-```powershell
-.\SETUP_SECRETS.ps1
-```
-This script will:
-1. Initialize user secrets if needed
-2. Prompt for Google OAuth credentials
-3. Securely store them locally
-
-#### Option 2: Manual Setup
-```bash
+# Secrets
 cd GEntretien
-
-# Initialize user secrets (first time only)
-dotnet user-secrets init
-
-# Add Google credentials
-dotnet user-secrets set "Authentication:Google:ClientId" "YOUR_CLIENT_ID"
-dotnet user-secrets set "Authentication:Google:ClientSecret" "YOUR_CLIENT_SECRET"
-
-# Verify
+dotnet user-secrets set "key" "value"
 dotnet user-secrets list
+
+# Database
+dotnet ef migrations add MigrationName -p GEntretien/ -s GEntretien/
+dotnet ef database update -p GEntretien/ -s GEntretien/
 ```
 
-### Getting Google OAuth Credentials
+---
 
-See [GOOGLE_OAUTH_SETUP.md](GOOGLE_OAUTH_SETUP.md) for **detailed step-by-step guide**:
-1. Create Google Cloud project
-2. Enable Google+ API
-3. Create OAuth 2.0 credentials
-4. Configure authorized redirect URIs
-5. Copy Client ID and Secret
+## ✨ Features
 
-**Quick checklist:**
-- ✅ Authorized JavaScript Origins: `http://localhost:5000`, `http://localhost:5001`
-- ✅ Authorized Redirect URIs: `http://localhost:5000/signin-google`, `http://localhost:5001/signin-google`
-- ✅ Scopes: `email`, `profile`
+### Authentification
+- ✅ Google OAuth 2.0
+- ✅ Session management
+- ✅ User profile display
+- ✅ Logout functionality
 
-### How It Works
+### Data Management
+- ✅ Equipment CRUD
+- ✅ Form validation
+- ✅ Error handling
+- ✅ SQLite persistence
 
-1. **Unauthenticated users** → Redirected to `/login` page
-2. **Click "Se connecter avec Google"** → Google OAuth flow
-3. **Google sign-in** → Returns to app with authenticated session
-4. **NavMenu displays** → User name, email, logout button
-5. **Click "Déconnexion"** → Clears session, redirects to login
+### User Experience
+- ✅ Real-time updates (Blazor)
+- ✅ Responsive design
+- ✅ French labels
+- ✅ Dropdown menus
 
-### Security Notes
+---
 
-- ⚠️ **Never commit** `appsettings.Development.json` or secrets
-- `appsettings.*.json` is in `.gitignore` (secrets protected)
-- User secrets stored locally: `%APPDATA%\Microsoft\UserSecrets\` (Windows) or `~/.microsoft/usersecrets/` (Linux/Mac)
-- Production: Use environment variables or Docker Secrets
+## 🔐 Sécurité
 
-## �🐳 Docker & CI/CD
+- ✅ Google OAuth (industry standard)
+- ✅ Secrets protected (.gitignore)
+- ✅ HTTPS ready
+- ✅ Session cookies
+- ✅ CSP headers (à configurer)
 
-### Automated Pipeline
+Pour production: Voir [deployment/SECRETS_MANAGEMENT.md](deployment/SECRETS_MANAGEMENT.md).
 
-GitHub Actions workflow automatically:
-1. ✅ Runs tests on PR/push
-2. 🏗️ Builds Docker image
-3. 📦 Pushes to GitHub Container Registry (ghcr.io)
+---
 
-See [.github/workflows/docker-ci.yml](.github/workflows/docker-ci.yml) for details.
+## 🚀 Déploiement
 
-### Manual Docker Build
-
+### Local
 ```bash
-docker build -t gentralretien:latest .
-docker run -p 5000:5000 gentralretien:latest
+dotnet run --project GEntretien/
 ```
 
-## 📋 Configuration
-
-### appsettings.json
-
-```json
-{
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
-    }
-  },
-  "ConnectionStrings": {
-    "Default": "Data Source=app.db"
-  }
-}
-```
-
-### Environment Variables
-
-- `ASPNETCORE_ENVIRONMENT` — `Development` or `Production`
-- `ASPNETCORE_URLS` — e.g., `http://+:5000`
-- `ConnectionStrings__Default` — Database connection string
-
-## 🚢 Deployment
-
-See [DOCKER_DEPLOYMENT.md](DOCKER_DEPLOYMENT.md) for:
-- Kubernetes deployment
-- Docker Swarm setup
-- Traditional VM deployment
-- Production database options
-
-## 📚 Architecture Decisions
-
-### Why Clean Architecture?
-
-- **Testability** — Core business logic has no external dependencies
-- **Maintainability** — Easy to understand and change code
-- **Flexibility** — Can swap implementations (e.g., SQLite → PostgreSQL)
-- **Scalability** — Clear separation makes adding features straightforward
-
-### Domain Layer Benefits
-
-- No references to EF Core, ASP.NET, or UI framework
-- Reusable across different applications (web, API, CLI)
-- Protected from external technology changes
-
-### Repository Pattern
-
-- Abstract data access from business logic
-- Easier to test (in-memory repositories)
-- Database-agnostic business logic
-
-## 🐛 Troubleshooting
-
-### Application won't start
+### Docker
 ```bash
-# Check if port is in use
-netstat -ano | findstr :5000
-
-# Run with environment override
-dotnet run --project GEntretien/GEntretien.csproj -- --environment Development
+docker-compose up -d
 ```
 
-### Database migration fails
-```bash
-# Ensure database file location is correct
-# Default: {project-root}/app.db
+### Production
+Voir [deployment/DOCKER.md](deployment/DOCKER.md) (Swarm) et [deployment/SECRETS_MANAGEMENT.md](deployment/SECRETS_MANAGEMENT.md) (Secrets).
 
-# Check EF Console setup
-dotnet ef --help
-```
+---
 
-### Docker image build fails
-- Check `Dockerfile` paths match actual project structure
-- Verify `.NET 10 SDK` support in Docker image
-- Check `.dockerignore` isn't excluding required files
+## 📞 Support
 
-## 📞 Support & Contributing
+| Question | Réponse |
+|----------|--------|
+| Comment démarrer? | [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) |
+| Où est la structure? | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| OAuth help | [docs/GOOGLE_OAUTH.md](docs/GOOGLE_OAUTH.md) |
+| Problématique? | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) |
+| Docker? | [deployment/DOCKER.md](deployment/DOCKER.md) |
+| Secrets? | [deployment/SECRETS_MANAGEMENT.md](deployment/SECRETS_MANAGEMENT.md) |
 
-1. Create an issue for bugs or feature requests
-2. Follow the project structure and SOLID principles
-3. Add tests for new code
-4. Keep commits small and descriptive
+---
 
-## 📄 License
+## 🧠 Stack Technologique
 
-[Add your license here]
+| Technologie | Versio |
+|---|---|
+| .NET | 10.0 |
+| Blazor Server | Built-in |
+| Entity Framework Core | 8.0.10 |
+| SQLite | 3.x |
+| FluentValidation | 11.9.1 |
+| Google OAuth | OIDC |
+| Docker | 27.x |
+| xUnit | 2.5.3 |
 
-## 🔗 Useful Links
+---
+
+## 📈 Roadmap
+
+**Complété:**
+- ✅ Blazor scaffolding
+- ✅ EF Core + SQLite
+- ✅ CRUD Equipment
+- ✅ FluentValidation
+- ✅ Unit tests
+- ✅ Docker setup
+- ✅ Google OAuth
+
+**À venir:**
+- [ ] MaintenanceRecord entity
+- [ ] Location management
+- [ ] Maintenance scheduling
+- [ ] User profile page
+- [ ] Export/Import data
+- [ ] Advanced reporting
+
+---
+
+## 🎓 Apprendre
 
 - [.NET 10 Documentation](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-10)
-- [Blazor Server Guide](https://learn.microsoft.com/en-us/aspnet/core/blazor/hosting-models)
+- [Blazor Server Docs](https://learn.microsoft.com/en-us/aspnet/core/blazor/hosting-models)
 - [Entity Framework Core](https://learn.microsoft.com/en-us/ef/core/)
 - [FluentValidation](https://docs.fluentvalidation.net/)
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+- [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)
+
+---
+
+## 📄 License
+
+[À spécifier]
+
+---
+
+**Prêt à démarrer?** Allez à [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) 🚀
