@@ -7,12 +7,12 @@ namespace GEntretien.Web.Features.Equipment.Pages;
 public partial class EquipmentList
 {
     [Inject]
-    private IEquipmentRepository EquipmentRepository { get; set; } = default!;
+    private IEquipmentRepository _equipmentRepository { get; set; } = default!;
 
     [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
+    private NavigationManager _navigationManager { get; set; } = default!;
 
-    private List<Domain.Entities.Equipment>? equipments;
+    private List<Domain.Entities.Equipment>? _equipments;
 
     protected override async Task OnInitializedAsync()
     {
@@ -21,17 +21,17 @@ public partial class EquipmentList
 
     private async Task Load()
     {
-        equipments = await EquipmentRepository.ListAsync();
+        _equipments = await _equipmentRepository.ListAsync();
     }
 
     private void CreateNew()
     {
-        NavigationManager.NavigateTo("/equipment/edit/0");
+        _navigationManager.NavigateTo("/equipment/edit/0");
     }
 
     private async Task Delete(int id)
     {
-        await EquipmentRepository.DeleteAsync(id);
+        await _equipmentRepository.DeleteAsync(id);
         await Load();
         StateHasChanged();
     }

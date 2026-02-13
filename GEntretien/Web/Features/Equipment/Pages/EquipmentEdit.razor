@@ -4,26 +4,25 @@
 
 <h3>@(Id == 0 ? "Créer Équipement" : $"Éditer Équipement #{Id}")</h3>
 
-<EditForm Model="model" OnValidSubmit="HandleValidSubmit">
+<EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
     <FluentValidationValidator />
     <ValidationSummary />
 
     <div class="mb-3">
         <label class="form-label">Nom</label>
-        <InputText class="form-control" @bind-Value="model.Name" />
+        <InputText class="form-control" @bind-Value="_model.Name" />
     </div>
 
     <div class="mb-3">
         <label class="form-label">Serial</label>
-        <InputText class="form-control" @bind-Value="model.SerialNumber" />
+        <InputText class="form-control" @bind-Value="_model.SerialNumber" />
     </div>
 
     <div class="mb-3">
         <label class="form-label">Location</label>
-        <InputText class="form-control" @bind-Value="model.Location" />
+        <InputText class="form-control" @bind-Value="_model.Location" />
     </div>
 
     <button class="btn btn-primary" type="submit">Enregistrer</button>
     <button class="btn btn-secondary" type="button" @onclick="Cancel">Annuler</button>
 </EditForm>
-

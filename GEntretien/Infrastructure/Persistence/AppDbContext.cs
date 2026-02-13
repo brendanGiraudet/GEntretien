@@ -10,6 +10,7 @@ namespace GEntretien.Infrastructure.Persistence
         }
 
         public DbSet<Equipment> Equipments => Set<Equipment>();
+        public DbSet<Intervention> Interventions => Set<Intervention>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -18,6 +19,18 @@ namespace GEntretien.Infrastructure.Persistence
             {
                 b.HasKey(e => e.Id);
                 b.Property(e => e.Name).IsRequired();
+            });
+
+            modelBuilder.Entity<Intervention>(b =>
+            {
+                b.HasKey(i => i.Id);
+                b.Property(i => i.Date).IsRequired();
+                b.Property(i => i.Description).IsRequired();
+                b.Property(i => i.Status).IsRequired();
+                b.HasOne(i => i.Equipment)
+                    .WithMany(e => e.Interventions)
+                    .HasForeignKey(i => i.EquipmentId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

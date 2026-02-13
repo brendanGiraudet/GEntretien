@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace GEntretien.Domain.Entities
 {
@@ -9,5 +10,6 @@ namespace GEntretien.Domain.Entities
         public string? SerialNumber { get; set; }
         public DateTime? PurchaseDate { get; set; }
         public string? Location { get; set; }
+        public List<Intervention> Interventions { get; set; } = new();
     }
 }

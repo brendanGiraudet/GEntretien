@@ -1,0 +1,82 @@
+@page "/equipment/{EquipmentId:int}/interventions"
+@using GEntretien.Domain.Entities
+@using GEntretien.Domain.Interfaces
+
+<h3>Historique des interventions</h3>
+
+@if (_equipment is null)
+{
+    <p class="text-muted">Chargement...</p>
+}
+else
+{
+    <p class="text-muted">Équipement: @_equipment.Name</p>
+
+    <EditForm Model="_interventionForm" OnValidSubmit="SaveIntervention" class="mt-3">
+        <FluentValidationValidator />
+        <ValidationSummary />
+        <div class="row g-3">
+            <div class="col-12 col-md-3">
+                <label class="form-label">Date</label>
+                <InputDate class="form-control" @bind-Value="_interventionForm.Date" />
+            </div>
+            <div class="col-12 col-md-3">
+                <label class="form-label">Statut</label>
+                <InputSelect class="form-control" @bind-Value="_interventionForm.Status">
+                    @foreach (var status in _statusOptions)
+                    {
+                        <option value="@status">@status</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label">Description</label>
+                <InputTextArea class="form-control" @bind-Value="_interventionForm.Description" rows="2" />
+            </div>
+        </div>
+        <div class="mt-3 d-flex gap-2">
+            <button class="btn btn-primary" type="submit">@(_isEditingIntervention ? "Mettre à jour" : "Ajouter")</button>
+            @if (_isEditingIntervention)
+            {
+                <button class="btn btn-secondary" type="button" @onclick="CancelInterventionEdit">Annuler</button>
+            }
+            <button class="btn btn-outline-secondary" type="button" @onclick="BackToEquipment">Retour</button>
+        </div>
+    </EditForm>
+
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Statut</th>
+                <th>Description</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (_interventions is null)
+            {
+                <tr><td colspan="4">Chargement...</td></tr>
+            }
+            else if (!_interventions.Any())
+            {
+                <tr><td colspan="4">Aucune intervention</td></tr>
+            }
+            else
+            {
+                @foreach (var intervention in _interventions)
+                {
+                    <tr>
+                        <td>@intervention.Date.ToString("yyyy-MM-dd")</td>
+                        <td>@intervention.Status</td>
+                        <td>@intervention.Description</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-secondary" @onclick="() => EditIntervention(intervention)">Éditer</button>
+                            <button class="btn btn-sm btn-danger" @onclick="() => DeleteIntervention(intervention.Id)">Supprimer</button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}

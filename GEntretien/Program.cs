@@ -43,7 +43,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
+builder.Services.AddScoped<IInterventionRepository, InterventionRepository>();
+
 builder.Services.AddScoped<FluentValidation.IValidator<GEntretien.Domain.Entities.Equipment>, GEntretien.Application.Validators.EquipmentValidator>();
+builder.Services.AddScoped<FluentValidation.IValidator<GEntretien.Domain.Entities.Intervention>, GEntretien.Application.Validators.InterventionValidator>();
 
 var app = builder.Build();
 

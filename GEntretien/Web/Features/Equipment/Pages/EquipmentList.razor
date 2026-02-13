@@ -17,17 +17,17 @@
         </tr>
     </thead>
     <tbody>
-        @if (equipments is null)
+        @if (_equipments is null)
         {
             <tr><td colspan="5">Chargement...</td></tr>
         }
-        else if (!equipments.Any())
+        else if (!_equipments.Any())
         {
             <tr><td colspan="5">Aucun équipement</td></tr>
         }
         else
         {
-            @foreach (var e in equipments)
+            @foreach (var e in _equipments)
             {
                 <tr>
                     <td>@e.Id</td>
@@ -36,6 +36,7 @@
                     <td>@e.Location</td>
                     <td>
                         <a class="btn btn-sm btn-secondary" href="/equipment/edit/@e.Id">Éditer</a>
+                        <a class="btn btn-sm btn-outline-secondary ms-1" href="/equipment/@e.Id/interventions">Historique</a>
                         <button class="btn btn-sm btn-danger" @onclick="() => Delete(e.Id)">Supprimer</button>
                     </td>
                 </tr>

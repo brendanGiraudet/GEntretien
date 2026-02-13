@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace GEntretien.Web.Features.Equipment.Pages;
 
-public partial class EquipmentEdit
+public partial class EquipmentInterventions
 {
     [Inject]
     private IEquipmentRepository _equipmentRepository { get; set; } = default!;
@@ -16,56 +16,38 @@ public partial class EquipmentEdit
     private NavigationManager _navigationManager { get; set; } = default!;
 
     [Parameter]
-    public int Id { get; set; }
+    public int EquipmentId { get; set; }
 
-    private Domain.Entities.Equipment _model = new();
+    private Domain.Entities.Equipment? _equipment;
     private List<Intervention>? _interventions;
-    private Intervention _interventionForm = new() { Date = DateTime.Today, Status = "Planifie" };
+    private Intervention _interventionForm = new() 
+    {
+        Date = DateTime.Today,
+        Status = "Planifie"
+    };
     private bool _isEditingIntervention;
     private static readonly string[] _statusOptions = { "Planifie", "En cours", "Terminee", "Annulee" };
 
     protected override async Task OnInitializedAsync()
     {
-        if (Id != 0)
+        _equipment = await _equipmentRepository.GetByIdAsync(EquipmentId);
+        if (_equipment is null)
         {
-            var e = await _equipmentRepository.GetByIdAsync(Id);
-            if (e != null)
-            {
-                _model = e;
-            }
-
-            await LoadInterventions();
-        }
-    }
-
-    private async Task HandleValidSubmit()
-    {
-        if (Id == 0)
-        {
-            await _equipmentRepository.AddAsync(_model);
-        }
-        else
-        {
-            await _equipmentRepository.UpdateAsync(_model);
+            return;
         }
 
-        _navigationManager.NavigateTo("/equipment");
-    }
+        await LoadInterventions();
 
-    private void Cancel()
-    {
-        _navigationManager.NavigateTo("/equipment");
+        _interventionForm.EquipmentId = EquipmentId;
     }
 
     private async Task LoadInterventions()
     {
-        _interventions = await _interventionRepository.ListByEquipmentAsync(Id);
+        _interventions = await _interventionRepository.ListByEquipmentAsync(EquipmentId);
     }
 
     private async Task SaveIntervention()
     {
-        _interventionForm.EquipmentId = Id;
-
         if (_isEditingIntervention)
         {
             await _interventionRepository.UpdateAsync(_interventionForm);
@@ -114,5 +96,10 @@ public partial class EquipmentEdit
             Status = _statusOptions[0]
         };
         _isEditingIntervention = false;
+    }
+
+    private void BackToEquipment()
+    {
+        _navigationManager.NavigateTo($"/equipment/edit/{EquipmentId}");
     }
 }

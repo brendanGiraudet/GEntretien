@@ -13,6 +13,12 @@ namespace GEntretien.Application.Validators
 
             RuleFor(x => x.SerialNumber)
                 .MaximumLength(100).WithMessage("Le numéro de série est trop long");
+
+            RuleFor(x => x.Location)
+                .MaximumLength(150).WithMessage("La localisation est trop longue");
+
+            RuleFor(x => x.PurchaseDate)
+                .LessThanOrEqualTo(DateTime.Today).WithMessage("La date d'achat ne peut pas être dans le futur");
         }
     }
 }
