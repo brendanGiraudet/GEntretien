@@ -1,7 +1,6 @@
 @page "/equipment"
 @using GEntretien.Domain.Entities
 @using GEntretien.Domain.Interfaces
-@inject IEquipmentRepository EquipmentRepository
 
 <h3>Equipements</h3>
 
@@ -44,32 +43,3 @@
         }
     </tbody>
 </table>
-
-@code {
-    private List<Equipment>? equipments;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await Load();
-    }
-
-    private async Task Load()
-    {
-        equipments = await EquipmentRepository.ListAsync();
-    }
-
-    private void CreateNew()
-    {
-        NavigationManager.NavigateTo("/equipment/edit/0");
-    }
-
-    [Inject]
-    public NavigationManager NavigationManager { get; set; } = default!;
-
-    private async Task Delete(int id)
-    {
-        await EquipmentRepository.DeleteAsync(id);
-        await Load();
-        StateHasChanged();
-    }
-}

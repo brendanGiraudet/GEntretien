@@ -1,22 +1,31 @@
 ﻿@inherits LayoutComponentBase
-@using GEntretien.Application.Services
-@inject IVersionService VersionService
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <span class="version-badge">@($"v{Version}")</span>
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+<div class="page @(_isMenuOpen ? "menu-open" : string.Empty)">
+    <header class="app-header">
+        <div class="top-row px-4 app-header-row">
+            <button class="menu-toggle" type="button" @onclick="ToggleMenu" aria-controls="sidebar-nav" aria-expanded="@(_isMenuOpen ? "true" : "false")">
+                <span class="menu-toggle-icon" aria-hidden="true"></span>
+                <span class="sr-only">Menu</span>
+            </button>
+            <span class="app-title">GEntretien</span>
+            <div class="header-actions">
+                <span class="version-badge">@($"v{_version}")</span>
+                <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            </div>
         </div>
+    </header>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+    <div class="layout-body">
+        <nav id="sidebar-nav" class="sidebar" aria-label="Main navigation">
+            <NavMenu />
+        </nav>
+
+        <main>
+            <article class="content px-4">
+                @Body
+            </article>
+        </main>
+    </div>
 </div>
 
 <div id="blazor-error-ui" data-nosnippet>
@@ -25,11 +34,3 @@
     <span class="dismiss">🗙</span>
 </div>
 
-@code {
-    private string Version { get; set; } = string.Empty;
-
-    protected override void OnInitialized()
-    {
-        Version = VersionService.GetVersion();
-    }
-}

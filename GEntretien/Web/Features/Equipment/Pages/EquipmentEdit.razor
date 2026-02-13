@@ -1,7 +1,6 @@
 @page "/equipment/edit/{Id:int}"
 @using GEntretien.Domain.Entities
 @using GEntretien.Domain.Interfaces
-@inject IEquipmentRepository EquipmentRepository
 
 <h3>@(Id == 0 ? "Créer Équipement" : $"Éditer Équipement #{Id}")</h3>
 
@@ -28,39 +27,3 @@
     <button class="btn btn-secondary" type="button" @onclick="Cancel">Annuler</button>
 </EditForm>
 
-@code {
-    [Parameter]
-    public int Id { get; set; }
-
-    private Equipment model = new Equipment();
-
-    [Inject]
-    public NavigationManager NavigationManager { get; set; } = default!;
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (Id != 0)
-        {
-            var e = await EquipmentRepository.GetByIdAsync(Id);
-            if (e != null) model = e;
-        }
-    }
-
-    private async Task HandleValidSubmit()
-    {
-        if (Id == 0)
-        {
-            await EquipmentRepository.AddAsync(model);
-        }
-        else
-        {
-            await EquipmentRepository.UpdateAsync(model);
-        }
-        NavigationManager.NavigateTo("/equipment");
-    }
-
-    private void Cancel()
-    {
-        NavigationManager.NavigateTo("/equipment");
-    }
-}
