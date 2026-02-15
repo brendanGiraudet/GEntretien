@@ -14,4 +14,10 @@ services:
       - ASPNETCORE_URLS=http://+:5000
       - ConnectionStrings__Default=Data Source=/app/data/app.db
       - Authentication__Google__ClientId=${GOOGLE_CLIENT_ID}
-      - Authentication__Google__ClientSecret=${GOOGLE_CLIENT_SECRET}
+      - Authentication__Google__ClientSecret=${GOOGLE_CLIENT_SECRET}    
+    
+    volumes:
+      - gentralretien-data:/app/data
+
+volumes:
+  gentralretien-data:

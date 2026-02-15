@@ -30,8 +30,8 @@ RUN apt-get update && apt-get install -y sqlite3 && rm -rf /var/lib/apt/lists/*
 # Copy published application from build stage
 COPY --from=build /app/publish .
 
-# Create a directory for SQLite database
-RUN mkdir -p /app/data
+# Create directories for SQLite database and Data Protection keys
+RUN mkdir -p /app/data/keys
 
 # Expose port (Blazor Server typically uses 5000/HTTP and 5001/HTTPS)
 EXPOSE 5000 5001
