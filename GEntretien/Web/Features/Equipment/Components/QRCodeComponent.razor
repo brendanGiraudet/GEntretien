@@ -1,0 +1,82 @@
+@using GEntretien.Application.Services
+
+<div class="qrcode-container">
+    @if (string.IsNullOrEmpty(QRCodeSvg))
+    {
+        <div class="text-center py-3">
+            <div class="spinner-border spinner-border-sm" role="status">
+                <span class="visually-hidden">Génération...</span>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <div class="qrcode-display bg-white p-3 rounded border d-inline-block" style="display: inline-block;">
+                @((MarkupString)QRCodeSvg)
+            </div>
+            <div class="mt-2">
+                <button class="btn btn-sm btn-outline-primary" @onclick="PrintQRCode" title="Imprimer le QR code">
+                    🖨️ Imprimer QR Code
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int EquipmentId { get; set; }
+
+    [Parameter]
+    public string? EquipmentName { get; set; }
+
+    [Inject]
+    private IQRCodeService QRCodeService { get; set; } = default!;
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+
+    private string QRCodeSvg { get; set; } = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        GenerateQRCode();
+    }
+
+    private void GenerateQRCode()
+    {
+        try
+        {
+            // Générer l'URL complète pour le QR code
+            var baseUri = NavigationManager.BaseUri;
+            var qrCodeUrl = $"{baseUri}equipment/view/{EquipmentId}";
+            
+            QRCodeSvg = QRCodeService.GenerateQRCodeSvg(qrCodeUrl);
+        }
+        catch (Exception ex)
+        {
+            QRCodeSvg = $"<text x=\"50%\" y=\"50%\" text-anchor=\"middle\">Erreur: {ex.Message}</text>";
+        }
+    }
+
+    private async Task PrintQRCode()
+    {
+        // L'impression est gérée via JavaScript (à ajouter dans un fichier JS si nécessaire)
+        // Pour maintenant, utiliser la fonction print du navigateur
+        await Task.CompletedTask;
+    }
+}
+
+<style>
+    .qrcode-display {
+        display: inline-block;
+        max-width: 300px;
+    }
+
+    .qrcode-display ::deep svg {
+        width: 100%;
+        height: auto;
+        max-width: 300px;
+    }
+</style>

@@ -29,25 +29,27 @@ else
         {
             <div class="col-md-6 col-lg-4 col-xl-3">
                 <div class="card h-100 shadow-sm equipment-card">
-                    <!-- Image de l'équipement -->
-                    <div class="equipment-image-container bg-light d-flex align-items-center justify-content-center" style="height: 180px; overflow: hidden;">
-                        @if (e.ImageData?.Length > 0)
-                        {
-                            <img src="data:@(e.ImageContentType ?? "image/jpeg");base64,@Convert.ToBase64String(e.ImageData)" 
-                                 alt="@e.Name" 
-                                 class="img-fluid"
-                                 style="max-height: 100%; object-fit: cover; width: 100%;" />
-                        }
-                        else
-                        {
-                            <div class="text-center text-muted w-100 h-100 d-flex align-items-center justify-content-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
-                                    <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-                                    <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.094l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
-                                </svg>
-                            </div>
-                        }
-                    </div>
+                    <!-- Image de l'équipement (cliquable) -->
+                    <a href="/equipment/view/@e.Id" style="text-decoration: none; color: inherit; cursor: pointer; display: block;">
+                        <div class="equipment-image-container bg-light d-flex align-items-center justify-content-center" style="height: 180px; overflow: hidden;">
+                            @if (e.ImageData?.Length > 0)
+                            {
+                                <img src="data:@(e.ImageContentType ?? "image/jpeg");base64,@Convert.ToBase64String(e.ImageData)" 
+                                     alt="@e.Name" 
+                                     class="img-fluid"
+                                     style="max-height: 100%; object-fit: cover; width: 100%;" />
+                            }
+                            else
+                            {
+                                <div class="text-center text-muted w-100 h-100 d-flex align-items-center justify-content-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
+                                        <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                                        <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.094l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
+                                    </svg>
+                                </div>
+                            }
+                        </div>
+                    </a>
 
                     <!-- Corps de la carte -->
                     <div class="card-body">
@@ -71,6 +73,9 @@ else
                     <!-- Boutons -->
                     <div class="card-footer bg-white border-top">
                         <div class="btn-group-vertical w-100" role="group">
+                            <a class="btn btn-sm btn-primary text-start" href="/equipment/view/@e.Id">
+                                <span class="me-2">👁️</span> Voir détails & QR
+                            </a>
                             <a class="btn btn-sm btn-secondary text-start" href="/equipment/edit/@e.Id">
                                 <span class="me-2">✏️</span> Éditer
                             </a>

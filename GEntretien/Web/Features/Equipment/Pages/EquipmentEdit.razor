@@ -5,31 +5,56 @@
 
 <h3>@(Id == 0 ? "Créer Équipement" : $"Éditer Équipement #{Id}")</h3>
 
-<EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
-    <FluentValidationValidator />
-    <ValidationSummary />
+<div class="row">
+    <div class="col-lg-8">
+        <EditForm Model="_model" OnValidSubmit="HandleValidSubmit">
+            <FluentValidationValidator />
+            <ValidationSummary />
 
-    <div class="mb-3">
-        <label class="form-label">Nom</label>
-        <InputText class="form-control" @bind-Value="_model.Name" />
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nom</label>
+                        <InputText class="form-control" @bind-Value="_model.Name" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Serial</label>
+                        <InputText class="form-control" @bind-Value="_model.SerialNumber" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Location</label>
+                        <InputText class="form-control" @bind-Value="_model.Location" />
+                    </div>
+
+                    <ImageUploadComponent 
+                        ImageData="_model.ImageData"
+                        ImageFileName="_model.ImageFileName"
+                        ImageContentType="_model.ImageContentType"
+                        OnImageChanged="HandleImageChanged" />
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                        <button class="btn btn-primary" type="submit">Enregistrer</button>
+                        <button class="btn btn-secondary" type="button" @onclick="Cancel">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </EditForm>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Serial</label>
-        <InputText class="form-control" @bind-Value="_model.SerialNumber" />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Location</label>
-        <InputText class="form-control" @bind-Value="_model.Location" />
-    </div>
-
-    <ImageUploadComponent 
-        ImageData="_model.ImageData"
-        ImageFileName="_model.ImageFileName"
-        ImageContentType="_model.ImageContentType"
-        OnImageChanged="HandleImageChanged" />
-
-    <button class="btn btn-primary" type="submit">Enregistrer</button>
-    <button class="btn btn-secondary" type="button" @onclick="Cancel">Annuler</button>
-</EditForm>
+    @if (Id != 0)
+    {
+        <div class="col-lg-4">
+            <div class="card shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">QR Code</h5>
+                </div>
+                <div class="card-body text-center">
+                    <p class="text-muted mb-3">Scannez ce code pour voir les détails et l'historique</p>
+                    <QRCodeComponent EquipmentId="@Id" EquipmentName="@_model.Name" />
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,170 @@
+@page "/equipment/view/{EquipmentId:int}"
+@using GEntretien.Domain.Entities
+@using GEntretien.Domain.Interfaces
+@using GEntretien.Web.Features.Equipment.Components
+
+<div class="container mt-5">
+    @if (_equipment is null)
+    {
+        if (_loadingError)
+        {
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Équipement non trouvé</h4>
+                <p>L'équipement #@EquipmentId n'existe pas ou a été supprimé.</p>
+                <a href="/equipment" class="btn btn-primary mt-3">Retour à la liste</a>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-8">
+                <!-- Informations de l'équipement -->
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">@_equipment.Name</h4>
+                    </div>
+
+                    @if (_equipment.ImageData?.Length > 0)
+                    {
+                        <div class="text-center py-4" style="background-color: #f8f9fa;">
+                            <img src="data:@(_equipment.ImageContentType ?? "image/jpeg");base64,@Convert.ToBase64String(_equipment.ImageData)" 
+                                 alt="@_equipment.Name" 
+                                 class="img-fluid rounded"
+                                 style="max-height: 400px; object-fit: contain;" />
+                        </div>
+                    }
+
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Numéro d'équipement</h6>
+                                <p class="display-6">#{_equipment.Id}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Numéro de série</h6>
+                                <p class="lead">@(_equipment.SerialNumber ?? "Non spécifié")</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6 class="text-muted">Localisation</h6>
+                            <p class="lead">@(_equipment.Location ?? "Non spécifiée")</p>
+                        </div>
+
+                        @if (_equipment.PurchaseDate.HasValue)
+                        {
+                            <div class="mb-3">
+                                <h6 class="text-muted">Date d'achat</h6>
+                                <p class="lead">@_equipment.PurchaseDate?.ToString("dd/MM/yyyy")</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Historique des interventions -->
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">Historique des interventions</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (_interventions is null)
+                        {
+                            <p class="text-muted">Chargement...</p>
+                        }
+                        else if (!_interventions.Any())
+                        {
+                            <p class="text-muted">Aucune intervention enregistrée.</p>
+                        }
+                        else
+                        {
+                            <div class="timeline">
+                                @foreach (var intervention in _interventions.OrderByDescending(i => i.Date))
+                                {
+                                    <div class="timeline-item mb-3 pb-3 border-bottom">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="mb-1">@intervention.Date.ToString("dd/MM/yyyy HH:mm")</h6>
+                                                <p class="mb-1">@intervention.Description</p>
+                                                <span class="badge bg-secondary">@intervention.Status</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- QR Code et actions -->
+            <div class="col-md-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header">
+                        <h5 class="mb-0">QR Code</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <QRCodeComponent EquipmentId="@_equipment.Id" EquipmentName="@_equipment.Name" />
+                    </div>
+                </div>
+
+                <!-- Boutons d'action -->
+                <div class="mt-4">
+                    <a href="/equipment/edit/@_equipment.Id" class="btn btn-secondary w-100 mb-2">
+                        ✏️ Éditer l'équipement
+                    </a>
+                    <a href="/equipment/@_equipment.Id/interventions" class="btn btn-outline-secondary w-100 mb-2">
+                        📋 Voir toutes les interventions
+                    </a>
+                    <a href="/equipment" class="btn btn-outline-primary w-100">
+                        ← Retour à la liste
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int EquipmentId { get; set; }
+
+    [Inject]
+    private IEquipmentRepository _equipmentRepository { get; set; } = default!;
+
+    [Inject]
+    private IInterventionRepository _interventionRepository { get; set; } = default!;
+
+    private Equipment? _equipment;
+    private List<Intervention>? _interventions;
+    private bool _loadingError;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _equipment = await _equipmentRepository.GetByIdAsync(EquipmentId);
+            
+            if (_equipment is not null)
+            {
+                _interventions = await _interventionRepository.ListByEquipmentAsync(EquipmentId);
+            }
+            else
+            {
+                _loadingError = true;
+            }
+        }
+        catch
+        {
+            _loadingError = true;
+        }
+    }
+}

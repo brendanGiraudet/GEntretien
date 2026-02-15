@@ -39,6 +39,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IVersionService, VersionService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IQRCodeService, QRCodeService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
