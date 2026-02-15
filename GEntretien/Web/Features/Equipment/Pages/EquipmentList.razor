@@ -10,6 +10,7 @@
     <thead>
         <tr>
             <th>Id</th>
+            <th>Image</th>
             <th>Nom</th>
             <th>Serial</th>
             <th>Location</th>
@@ -19,11 +20,11 @@
     <tbody>
         @if (_equipments is null)
         {
-            <tr><td colspan="5">Chargement...</td></tr>
+            <tr><td colspan="6">Chargement...</td></tr>
         }
         else if (!_equipments.Any())
         {
-            <tr><td colspan="5">Aucun équipement</td></tr>
+            <tr><td colspan="6">Aucun équipement</td></tr>
         }
         else
         {
@@ -31,6 +32,19 @@
             {
                 <tr>
                     <td>@e.Id</td>
+                    <td>
+                        @if (e.ImageData?.Length > 0)
+                        {
+                            <img src="data:@(e.ImageContentType ?? "image/jpeg");base64,@Convert.ToBase64String(e.ImageData)" 
+                                 alt="@e.Name" 
+                                 class="img-thumbnail" 
+                                 style="max-width: 50px; max-height: 50px;" />
+                        }
+                        else
+                        {
+                            <span class="text-muted">—</span>
+                        }
+                    </td>
                     <td>@e.Name</td>
                     <td>@e.SerialNumber</td>
                     <td>@e.Location</td>

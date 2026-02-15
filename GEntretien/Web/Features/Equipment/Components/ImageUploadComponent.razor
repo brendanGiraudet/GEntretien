@@ -1,0 +1,104 @@
+@implements IAsyncDisposable
+@using Microsoft.AspNetCore.Components.Forms
+@using GEntretien.Application.Services
+
+<div class="mb-3">
+    <label class="form-label">Image</label>
+    
+    @if (HasImage)
+    {
+        <div class="mb-2">
+            <div class="text-center">
+                <img src="data:@ImageContentType;base64,@Convert.ToBase64String(ImageData!)" 
+                     alt="Image actuelle" 
+                     class="img-thumbnail" 
+                     style="max-width: 200px; max-height: 200px;" />
+            </div>
+            <button type="button" class="btn btn-sm btn-danger" @onclick="RemoveImage">Supprimer l'image</button>
+        </div>
+    }
+    
+    <InputFile class="form-control" OnChange="HandleFileSelected" accept="image/*" />
+    
+    @if (!string.IsNullOrEmpty(StatusMessage))
+    {
+        <div class="alert @StatusClass mt-2" role="alert">
+            @StatusMessage
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public byte[]? ImageData { get; set; }
+
+    [Parameter]
+    public string? ImageFileName { get; set; }
+
+    [Parameter]
+    public string? ImageContentType { get; set; }
+
+    [Parameter]
+    public EventCallback<(byte[]? data, string? fileName, string? contentType)> OnImageChanged { get; set; }
+
+    [Inject]
+    private IImageService ImageService { get; set; } = default!;
+
+    private string? StatusMessage { get; set; }
+    private string StatusClass { get; set; } = "alert-danger";
+    private IBrowserFile? _selectedFile;
+
+    public bool HasImage => ImageData?.Length > 0;
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        StatusMessage = null;
+        
+        try
+        {
+            _selectedFile = e.File;
+            
+            var (data, fileName, contentType) = await ImageService.ProcessImageFileAsync(_selectedFile);
+            
+            ImageData = data;
+            ImageFileName = fileName;
+            ImageContentType = contentType;
+            
+            await OnImageChanged.InvokeAsync((data, fileName, contentType));
+            
+            StatusMessage = "Image téléchargée avec succès.";
+            StatusClass = "alert-success";
+        }
+        catch (InvalidOperationException ex)
+        {
+            StatusMessage = ex.Message;
+            StatusClass = "alert-danger";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Erreur: {ex.Message}";
+            StatusClass = "alert-danger";
+        }
+    }
+
+    private async Task RemoveImage()
+    {
+        ImageData = null;
+        ImageFileName = null;
+        ImageContentType = null;
+        _selectedFile = null;
+        
+        await OnImageChanged.InvokeAsync((null, null, null));
+        
+        StatusMessage = "Image supprimée.";
+        StatusClass = "alert-info";
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (_selectedFile is not null)
+        {
+            await _selectedFile.OpenReadStream().DisposeAsync();
+        }
+    }
+}

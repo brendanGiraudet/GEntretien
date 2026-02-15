@@ -52,6 +52,13 @@ public partial class EquipmentEdit
         _navigationManager.NavigateTo("/equipment");
     }
 
+    private void HandleImageChanged((byte[]? data, string? fileName, string? contentType) imageData)
+    {
+        _model.ImageData = imageData.data;
+        _model.ImageFileName = imageData.fileName;
+        _model.ImageContentType = imageData.contentType;
+    }
+
     private void Cancel()
     {
         _navigationManager.NavigateTo("/equipment");
