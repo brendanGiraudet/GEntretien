@@ -1,7 +1,9 @@
 @page "/equipment/view/{EquipmentId:int}"
+@using Microsoft.AspNetCore.Components.Web
 @using GEntretien.Domain.Entities
 @using GEntretien.Domain.Interfaces
 @using GEntretien.Web.Features.Equipment.Components
+@rendermode RenderMode.InteractiveServer
 
 <div class="container mt-5">
     @if (_equipment is null)

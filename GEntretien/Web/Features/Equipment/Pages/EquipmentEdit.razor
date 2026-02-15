@@ -1,7 +1,9 @@
 @page "/equipment/edit/{Id:int}"
+@using Microsoft.AspNetCore.Components.Web
 @using GEntretien.Domain.Entities
 @using GEntretien.Domain.Interfaces
 @using GEntretien.Web.Features.Equipment.Components
+@rendermode RenderMode.InteractiveServer
 
 <h3>@(Id == 0 ? "Créer Équipement" : $"Éditer Équipement #{Id}")</h3>
 
