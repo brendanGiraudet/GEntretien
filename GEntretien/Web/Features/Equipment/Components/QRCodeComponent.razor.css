@@ -1,0 +1,10 @@
+.qrcode-display {
+    display: inline-block;
+    max-width: 300px;
+}
+
+.qrcode-display ::deep svg {
+    width: 100%;
+    height: auto;
+    max-width: 300px;
+}

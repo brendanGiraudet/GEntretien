@@ -132,39 +132,3 @@
         </div>
     }
 </div>
-
-@code {
-    [Parameter]
-    public int EquipmentId { get; set; }
-
-    [Inject]
-    private IEquipmentRepository _equipmentRepository { get; set; } = default!;
-
-    [Inject]
-    private IInterventionRepository _interventionRepository { get; set; } = default!;
-
-    private Equipment? _equipment;
-    private List<Intervention>? _interventions;
-    private bool _loadingError;
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            _equipment = await _equipmentRepository.GetByIdAsync(EquipmentId);
-            
-            if (_equipment is not null)
-            {
-                _interventions = await _interventionRepository.ListByEquipmentAsync(EquipmentId);
-            }
-            else
-            {
-                _loadingError = true;
-            }
-        }
-        catch
-        {
-            _loadingError = true;
-        }
-    }
-}
