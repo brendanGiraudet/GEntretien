@@ -2,59 +2,111 @@
 @using GEntretien.Domain.Entities
 @using GEntretien.Domain.Interfaces
 
-<h3>Equipements</h3>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">Equipements</h3>
+    <button class="btn btn-primary" @onclick="CreateNew">+ Créer un équipement</button>
+</div>
 
-<button class="btn btn-primary" @onclick="CreateNew">Créer un équipement</button>
-
-<table class="table mt-3">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Image</th>
-            <th>Nom</th>
-            <th>Serial</th>
-            <th>Location</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (_equipments is null)
+@if (_equipments is null)
+{
+    <div class="text-center py-5">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Chargement...</span>
+        </div>
+    </div>
+}
+else if (!_equipments.Any())
+{
+    <div class="alert alert-info text-center py-5" role="alert">
+        <p class="mb-3">Aucun équipement pour le moment</p>
+        <button class="btn btn-primary" @onclick="CreateNew">Créer le premier équipement</button>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var e in _equipments)
         {
-            <tr><td colspan="6">Chargement...</td></tr>
-        }
-        else if (!_equipments.Any())
-        {
-            <tr><td colspan="6">Aucun équipement</td></tr>
-        }
-        else
-        {
-            @foreach (var e in _equipments)
-            {
-                <tr>
-                    <td>@e.Id</td>
-                    <td>
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="card h-100 shadow-sm equipment-card">
+                    <!-- Image de l'équipement -->
+                    <div class="equipment-image-container bg-light d-flex align-items-center justify-content-center" style="height: 180px; overflow: hidden;">
                         @if (e.ImageData?.Length > 0)
                         {
                             <img src="data:@(e.ImageContentType ?? "image/jpeg");base64,@Convert.ToBase64String(e.ImageData)" 
                                  alt="@e.Name" 
-                                 class="img-thumbnail" 
-                                 style="max-width: 50px; max-height: 50px;" />
+                                 class="img-fluid"
+                                 style="max-height: 100%; object-fit: cover; width: 100%;" />
                         }
                         else
                         {
-                            <span class="text-muted">—</span>
+                            <div class="text-center text-muted w-100 h-100 d-flex align-items-center justify-content-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
+                                    <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                                    <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.094l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
+                                </svg>
+                            </div>
                         }
-                    </td>
-                    <td>@e.Name</td>
-                    <td>@e.SerialNumber</td>
-                    <td>@e.Location</td>
-                    <td>
-                        <a class="btn btn-sm btn-secondary" href="/equipment/edit/@e.Id">Éditer</a>
-                        <a class="btn btn-sm btn-outline-secondary ms-1" href="/equipment/@e.Id/interventions">Historique</a>
-                        <button class="btn btn-sm btn-danger" @onclick="() => Delete(e.Id)">Supprimer</button>
-                    </td>
-                </tr>
-            }
+                    </div>
+
+                    <!-- Corps de la carte -->
+                    <div class="card-body">
+                        <h5 class="card-title">@e.Name</h5>
+                        
+                        @if (!string.IsNullOrEmpty(e.SerialNumber))
+                        {
+                            <p class="card-text small text-muted mb-1">
+                                <strong>Serial:</strong> @e.SerialNumber
+                            </p>
+                        }
+
+                        @if (!string.IsNullOrEmpty(e.Location))
+                        {
+                            <p class="card-text small text-muted mb-0">
+                                <strong>Localisation:</strong> @e.Location
+                            </p>
+                        }
+                    </div>
+
+                    <!-- Boutons -->
+                    <div class="card-footer bg-white border-top">
+                        <div class="btn-group-vertical w-100" role="group">
+                            <a class="btn btn-sm btn-secondary text-start" href="/equipment/edit/@e.Id">
+                                <span class="me-2">✏️</span> Éditer
+                            </a>
+                            <a class="btn btn-sm btn-outline-secondary text-start" href="/equipment/@e.Id/interventions">
+                                <span class="me-2">📋</span> Historique
+                            </a>
+                            <button class="btn btn-sm btn-outline-danger text-start" @onclick="() => Delete(e.Id)">
+                                <span class="me-2">🗑️</span> Supprimer
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ID en petit dans le coin -->
+                    <div class="position-absolute top-0 end-0 m-2">
+                        <span class="badge bg-secondary">#{e.Id}</span>
+                    </div>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+}
+
+<style>
+    .equipment-card {
+        position: relative;
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .equipment-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15) !important;
+    }
+
+    .equipment-image-container {
+        position: relative;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+</style>
