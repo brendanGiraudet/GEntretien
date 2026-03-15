@@ -97,9 +97,4 @@ public partial class EquipmentInterventions
         };
         _isEditingIntervention = false;
     }
-
-    private void BackToEquipment()
-    {
-        _navigationManager.NavigateTo($"/equipment/edit/{EquipmentId}");
-    }
 }

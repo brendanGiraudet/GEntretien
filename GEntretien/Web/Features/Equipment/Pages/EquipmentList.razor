@@ -6,7 +6,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h3 class="mb-0">Equipements</h3>
-    <button class="btn btn-primary" @onclick="CreateNew">+ Créer un équipement</button>
+    <a href="/equipment/edit/0" class="btn btn-primary">+ Créer un équipement</a>
 </div>
 
 @if (_equipments is null)
@@ -21,7 +21,7 @@ else if (!_equipments.Any())
 {
     <div class="alert alert-info text-center py-5" role="alert">
         <p class="mb-3">Aucun équipement pour le moment</p>
-        <button class="btn btn-primary" @onclick="CreateNew">Créer le premier équipement</button>
+        <a href="/equipment/edit/0" class="btn btn-primary">Créer le premier équipement</a>
     </div>
 }
 else
@@ -92,7 +92,7 @@ else
 
                     <!-- ID en petit dans le coin -->
                     <div class="position-absolute top-0 end-0 m-2">
-                        <span class="badge bg-secondary">#{e.Id}</span>
+                        <span class="badge bg-secondary">#@e.Id</span>
                     </div>
                 </div>
             </div>
