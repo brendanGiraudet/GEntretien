@@ -1,16 +1,17 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
+﻿@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 
-<div class="nav-scrollable">
+<div class="nav-scrollable @(IsCollapsed ? "collapsed" : "expanded")">
     <nav class="nav flex-column">
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="OnLinkClicked">
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Accueil
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="equipment">
+            <NavLink class="nav-link" href="equipment" @onclick="OnLinkClicked">
                 <span class="bi bi-hammer" aria-hidden="true"></span> Équipements
             </NavLink>
         </div>

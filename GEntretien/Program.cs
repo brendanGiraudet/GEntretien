@@ -21,7 +21,7 @@ builder.Services.AddDataProtection()
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+                .AddInteractiveServerComponents();
 
 // Add Authentication services
 builder.Services.AddAuthentication(options =>
@@ -78,8 +78,9 @@ app.UseAuthorization();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
+
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+     .AddInteractiveServerRenderMode();
 
 // Map authentication endpoints
 app.MapGet("/login", async (HttpContext context) =>

@@ -1,9 +1,9 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page @(_isMenuOpen ? "menu-open" : string.Empty)">
+<div class="page @(!_isMenuCollapsed ? "menu-open" : string.Empty)">
     <header class="app-header">
         <div class="top-row px-4 app-header-row">
-            <button class="menu-toggle" type="button" @onclick="ToggleMenu" aria-controls="sidebar-nav" aria-expanded="@(_isMenuOpen ? "true" : "false")">
+            <button class="menu-toggle" type="button" @onclick="@ToggleMenu" aria-controls="sidebar-nav" aria-expanded="@(!_isMenuCollapsed ? "true" : "false")">
                 <span class="menu-toggle-icon" aria-hidden="true"></span>
                 <span class="sr-only">Menu</span>
             </button>
@@ -16,8 +16,8 @@
     </header>
 
     <div class="layout-body">
-        <nav id="sidebar-nav" class="sidebar" aria-label="Main navigation">
-            <NavMenu />
+        <nav id="sidebar-nav" class="sidebar @( _isMenuCollapsed ? "collapsed" : string.Empty)" aria-label="Main navigation">
+            <NavMenu IsCollapsed="@_isMenuCollapsed" OnCollapseChanged="SetCollapsed" />
         </nav>
 
         <main>

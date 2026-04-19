@@ -1,23 +1,34 @@
 using GEntretien.Application.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace GEntretien.Components.Layout;
 
-public partial class MainLayout
+public partial class MainLayout : LayoutComponentBase
 {
-    [Inject]
-    private IVersionService _versionService { get; set; } = default!;
+    [Inject] public required IVersionService VersionService { get; set; }
+
+    [Inject] public required ILogger<MainLayout> Logger { get; set; }
 
     private string _version = string.Empty;
-    private bool _isMenuOpen;
+    private bool _isMenuCollapsed;
 
     protected override void OnInitialized()
     {
-        _version = _versionService.GetVersion();
+        _version = VersionService.GetVersion();
     }
 
     private void ToggleMenu()
     {
-        _isMenuOpen = !_isMenuOpen;
+        _isMenuCollapsed = !_isMenuCollapsed;
+        Logger.LogInformation("ToggleMenu invoked; collapsed={Collapsed}", _isMenuCollapsed);
+
+        StateHasChanged();
+    }
+
+    private void SetCollapsed(bool collapsed)
+    {
+        _isMenuCollapsed = collapsed;
+        StateHasChanged();
     }
 }
